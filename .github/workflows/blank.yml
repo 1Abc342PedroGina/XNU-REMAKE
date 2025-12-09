@@ -1,25 +1,20 @@
 name: Build e Teste no macOS
 
-on:
-  push:
-    branches:
-      - main
+on: [push]
 
 jobs:
   build:
-    # Esta linha é a chave! Ela especifica qual sistema operacional usar.
     runs-on: macos-latest
-
     steps:
     - name: Checkout do código
       uses: actions/checkout@v4
 
-    - name: Verificar a versão do Xcode instalado
-      run: xcodebuild -version
+    # ADICIONE ESTE PASSO PARA OBTER ACESSO SSH
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
 
     - name: Executar comandos de build (exemplo)
-      # Substitua por seus comandos reais para compilar seu projeto
+      # Este passo agora rodará DENTRO da sua sessão tmate
       run: |
-        echo "Iniciando o build..."
-        # Se for um projeto Xcode, você usaria algo como:
-        # xcodebuild clean build -project SeuApp.xcodeproj -scheme SeuApp
+        echo "Agora você pode se conectar via SSH para inspecionar o ambiente."
+        # ... seus comandos para compilar o XNU podem vir aqui ...
