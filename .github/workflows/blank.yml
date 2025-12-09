@@ -1,0 +1,25 @@
+name: Build e Teste no macOS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    # Esta linha é a chave! Ela especifica qual sistema operacional usar.
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v4
+
+    - name: Verificar a versão do Xcode instalado
+      run: xcodebuild -version
+
+    - name: Executar comandos de build (exemplo)
+      # Substitua por seus comandos reais para compilar seu projeto
+      run: |
+        echo "Iniciando o build..."
+        # Se for um projeto Xcode, você usaria algo como:
+        # xcodebuild clean build -project SeuApp.xcodeproj -scheme SeuApp
