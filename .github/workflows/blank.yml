@@ -1,87 +1,20 @@
-name: Build e Teste no macOS com GUI
+name: Build e Teste no macOS
 
 on: [push]
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-26
     steps:
     - name: Checkout do código
       uses: actions/checkout@v4
 
-    - name: Inicializar GUI no macOS
-      run: |
-        # Configurar variáveis de ambiente para GUI
-        export DISPLAY=:99
-        
-        # Instalar XQuartz se necessário (para aplicações X11)
-        # brew install --cask xquartz
-        
-        # Iniciar o servidor de exibição virtual
-        /usr/bin/sudo /usr/sbin/installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
-        
-        # Habilitar acesso remoto à GUI (se necessário)
-        sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart \
-          -activate -configure -access -on \
-          -restart -agent -privs -all
-
-    # Opção 1: Usar tmate para debug interativo
-    - name: Setup tmate session (para debug)
+    # ADICIONE ESTE PASSO PARA OBTER ACESSO SSH
+    - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
-      if: ${{ github.event_name == 'workflow_dispatch' }}  # Opcional: só em execuções manuais
 
-    # Opção 2: Usar scripts automatizados com GUI
-    - name: Executar aplicação com GUI
+    - name: Executar comandos de build (exemplo)
+      # Este passo agora rodará DENTRO da sua sessão tmate
       run: |
-        # Exemplo: Executar um aplicativo com GUI
-        # Para aplicativos que usam Aqua (GUI nativa do macOS)
-        
-        # Definir permissões para executar aplicativos GUI
-        sudo security authorizationdb write system.privilege.taskport allow
-        
-        # Exemplo de comando que pode usar GUI
-        osascript -e 'tell app "System Events" to display dialog "Build iniciado"'
-        
-        # Ou executar seu próprio aplicativo
-        # ./seu-aplicativo.app/Contents/MacOS/seu-aplicativo
-
-    - name: Testes com GUI
-      run: |
-        # Para testes que precisam de GUI, você pode usar:
-        
-        # 1. Ativar modo de acesso assistivo (se necessário)
-        # sudo sqlite3 /Library/Application\ Support/com.apple.TCC/TCC.db \
-        #   "INSERT OR REPLACE INTO access VALUES('kTCCServiceAccessibility','com.apple.Terminal',0,1,1,NULL,NULL,NULL,'UNUSED',NULL,0,1541440109);"
-        
-        # 2. Executar testes GUI
-        echo "Executando testes com suporte a GUI..."
-        
-        # Exemplo com script AppleScript para interagir com GUI
-        cat > test_gui.scpt << 'EOF'
-        tell application "System Events"
-          tell process "Finder"
-            set frontmost to true
-          end tell
-        end tell
-        EOF
-        
-        osascript test_gui.scpt
-
-    - name: Capturar screenshot (verificação)
-      run: |
-        # Tirar screenshot para verificar se GUI está funcionando
-        screencapture screenshot.png
-        
-        # Verificar se o arquivo foi criado
-        if [ -f screenshot.png ]; then
-          echo "GUI está funcionando - screenshot capturado"
-        else
-          echo "Aviso: Não foi possível capturar screenshot"
-        fi
-
-    - name: Build do projeto
-      run: |
-        # Seus comandos de build aqui
-        echo "Executando build..."
-        # make build
-        # xcodebuild -project seu-projeto.xcodeproj
+        echo "Agora você pode se conectar via SSH para inspecionar o ambiente."
+        # ... seus comandos para compilar o XNU podem vir aqui ...
